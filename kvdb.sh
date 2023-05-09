@@ -5,6 +5,7 @@
 # - User needs to identify the surviving kvdb node and with associated disk healthy
 # - Once the kvdb node is identified, script can be executed and the user will be guided along the process
 # - Script stops all px nodes, executes kvdb recovery using snapshots, then starts all nodes
+# - Runs in dry run mode by default.  Use "run" arg to execute. ie kvdb.sh run
 # - Written by C2 with guidance by Aditya
 
 # Create a local directory where all files needed for the recovery will be stored
@@ -240,7 +241,7 @@ execute kubectl exec $KVDB_NODEPOD -c portworx -n $NAMESPACE -- nsenter --mount=
 
 execute kubectl exec $KVDB_NODEPOD -c portworx -n $NAMESPACE -- test ! -f /var/corest/etcd_recovery_run
 
-echo "Test if /var/cores/etcd_recovery_run does not exist : $?"
+# echo "Test if /var/cores/etcd_recovery_run does not exist : $?"
 
 if [ $? -eq 0 ] ; then
   execute kubectl label node "$KVDB_NODE" px/service=start --overwrite
