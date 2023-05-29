@@ -53,26 +53,31 @@ px_component = ["kvdb", "dmthin", "nfs", "lic", "install", "all"]
 
 # Count total patterns found in the log
 pattern_found = 0
+
 def etcd_psearch(etcd_found, fline):
     global pattern_found
     if re_etcd.search(fline):
         etcd_found.append(fline.strip())
         pattern_found += 1
+        
 def dmthin_psearch(dmthin_found, fline):
     global pattern_found
     if re_dmthin.search(fline):
         dmthin_found.append(fline.strip())
         pattern_found += 1
+        
 def nfs_psearch(nfs_found, fline):
     global pattern_found
     if re_nfs.search(fline):
         nfs_found.append(fline.strip())
         pattern_found += 1
+        
 def lic_psearch(lic_found, fline):
     global pattern_found
     if re_lic.search(fline):
         lic_found.append(fline.strip())
         pattern_found += 1
+        
 def inst_psearch(inst_found, fline):
     global pattern_found
     if re_inst.search(fline):
