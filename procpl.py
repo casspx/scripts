@@ -49,6 +49,7 @@ class LogParser:
             print(err)
             print(f"Invalid arguments. Usage: {sys.argv[0]} --help")
             sys.exit()
+            
     def parse_log_file(self):
         counter = 0
 
@@ -82,6 +83,7 @@ class LogParser:
         except Exception as err:
             print(err)
             sys.exit("parse_log_file exited")
+            
     def print_found_re(self):
         if self.etcd_found:
             for count, value in enumerate(self.etcd_found):
@@ -107,6 +109,7 @@ class LogParser:
             print("No patterns found")
         else:
             print("Total log pattern/s found :", self.plib.pattern_found)
+            
 
 if __name__ == '__main__':
     run = LogParser()
