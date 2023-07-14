@@ -151,7 +151,7 @@ function check_pxpod_down() {
       kubectl get pods -lname=portworx -n $NAMESPACE
         break
     fi 
-      done
+  done
 }
 
 execute check_pxpod_down
@@ -162,17 +162,16 @@ execute check_pxpod_down
 
 KVDB_YAML="px-bootstrap.yaml"
 
-execute kubectl annotate cm "$PX_BOOTSTRAP" kubectl.kubernetes.io/last-applied-configuration- -n kube-system
-execute kubectl get cm "$PX_BOOTSTRAP" -oyaml -n kube-system > ~/$DIR/$KVDB_YAML 
-execute echo "Updating px-bootstrap configmap"
-
 function update_bootstrap_file() {
+  kubectl annotate cm "$PX_BOOTSTRAP" kubectl.kubernetes.io/last-applied-configuration- -n kube-system
+  kubectl get cm "$PX_BOOTSTRAP" -oyaml -n kube-system > ~/$DIR/$KVDB_YAML
+  echo "Updating px-bootstrap configmap"
   sed -i '' "s/\[.*\]/${KVDB_SINGLE_ENTRY}/g" ~/$DIR/$KVDB_YAML
+  grep "px-entries: " ~/$DIR/$KVDB_YAML | sed 's/^ *//g'
+  kubectl apply -f ~/$DIR/$KVDB_YAML
 }
 
 execute update_bootstrap_file
-execute "grep "px-entries: " ~/$DIR/$KVDB_YAML | sed 's/^ *//g'"
-execute kubectl apply -f ~/$DIR/$KVDB_YAML
 
 # Build etcd restore script
 # - Download etcdctl binary
@@ -214,6 +213,9 @@ KVDB_MOUNT_PATH="/kvdb-recovery"
 if [ "$KVDB_DATADIRTYPE" == "KvdbDevice" ] ; then
   KVDB_DISK=\$(sudo blkid |grep kvdbvol |awk -F: '{print \$1}')
     KVDB_DISK_PATH=\$KVDB_MOUNT_PATH
+      if grep -qs '/dev/mapper' <<< "\$KVDB_DISK" ; then
+        KVDB_DISK=`grep '/dev/mapper' <<< "\$KVDB_DISK"`
+      fi
 elif [ "$KVDB_DATADIRTYPE" == "MetadataDevice" ] || [ "$KVDB_DATADIRTYPE" == "BtrfsSubvolume" ] ; then 
   KVDB_DISK=\$(sudo blkid |grep "mdvol" |head -1 |awk -F: '{print \$1}')
     KVDB_DISK_PATH="\$KVDB_MOUNT_PATH"/.metadata
