@@ -208,7 +208,7 @@ fi
 
 # Mount kvdb disk and backup kvdb db
 
-KVDB_MOUNT_PATH="/kvdb-recovery"
+KVDB_MOUNT_PATH="/var/cores/kvdb-recovery"
 
 if [ "$KVDB_DATADIRTYPE" == "KvdbDevice" ] ; then
   KVDB_DISK=\$(sudo blkid |grep kvdbvol |awk -F: '{print \$1}')
