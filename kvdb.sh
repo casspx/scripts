@@ -214,11 +214,16 @@ if [ "$KVDB_DATADIRTYPE" == "KvdbDevice" ] ; then
   KVDB_DISK=\$(sudo blkid |grep kvdbvol |awk -F: '{print \$1}')
     KVDB_DISK_PATH=\$KVDB_MOUNT_PATH
       if grep -qs '/dev/mapper' <<< "\$KVDB_DISK" ; then
-        KVDB_DISK=`grep '/dev/mapper' <<< "\$KVDB_DISK"`
+        KVDB_DISK=\$(grep '/dev/mapper' <<< "\$KVDB_DISK")
       fi
 elif [ "$KVDB_DATADIRTYPE" == "MetadataDevice" ] || [ "$KVDB_DATADIRTYPE" == "BtrfsSubvolume" ] ; then 
-  KVDB_DISK=\$(sudo blkid |grep "mdvol" |head -1 |awk -F: '{print \$1}')
+  KVDB_DISK=\$(sudo blkid |grep "mdvol" |awk -F: '{print \$1}')
     KVDB_DISK_PATH="\$KVDB_MOUNT_PATH"/.metadata
+      if grep -qs '/dev/mapper' <<< "\$KVDB_DISK" ; then
+        KVDB_DISK=\$(grep '/dev/mapper' <<< "\$KVDB_DISK")
+      else
+        KVDB_DISK=\$(head -1 <<< "\$KVDB_DISK")
+      fi
 fi
 
 if grep -qs \$KVDB_DISK /proc/mounts; then 
