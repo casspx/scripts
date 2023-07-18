@@ -37,6 +37,8 @@ elif [ "$DRY_RUN" == 'run' ] ; then
   echo "Recreating ~/$DIR directory"
     mv ~/$DIR ~/${DIR}.$(date "+%m%d%Y%H%M%S")
       mkdir ~/$DIR
+else 
+  echo "You can delete ~/$DIR directory to make sure there are no stale entries if you're running dry run again" 
 fi
 
 kubectl config current-context
